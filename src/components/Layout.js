@@ -25,6 +25,12 @@ const Layout = ({ children, title = "This is the default title" }) => {
                 Home
               </Link>
               <Link
+                href="/sell-article"
+                className="text-white block mt-4 lg:inline-block lg:mt-0 text-teal-lighter hover:text-white mr-4"
+              >
+                Sell Article
+              </Link>
+              <Link
                 href="/about"
                 className="text-white block mt-4 lg:inline-block lg:mt-0 text-teal-lighter hover:text-white mr-4"
               >

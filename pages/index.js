@@ -5,7 +5,7 @@ import Router from "next/router";
 
 const Home = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  const coffeeOrders = [
+  const items = [
     {
       name: "Table",
       description: "The beautiful table",
@@ -40,8 +40,8 @@ const Home = () => {
         query: { titlecoffee: title },
       });
     else {
-      Router.push("/login")
-    };
+      Router.push("/login");
+    }
   };
 
   return (
@@ -55,15 +55,11 @@ const Home = () => {
           </p>
 
           <div className="flex flex-wrap items-center justify-center  mt-6 sm:w-full">
-            {coffeeOrders.map((order) => (
+            {items.map((order) => (
               <div
                 key={order.name}
                 className="bg-white dark:bg-[#00561B] dark:border-white dark:border-2 p-6 rounded-lg shadow-lg m-4 w-80"
               >
-                <img
-                  src={order.image}
-                  className="w-full max-h-32 object-fill"
-                />
                 <h3 className="font-bold text-xl mb-2">{order.name}</h3>
                 <p className="text-gray-700 dark:text-gray-300 text-base">
                   {order.description}
@@ -72,7 +68,7 @@ const Home = () => {
                   onClick={() => CommandCoffee(order.name)}
                   className="hover:text-black hover:bg-white bg-[#00561B] dark:bg-white text-white dark:text-black dark:hover:bg-[#00561B] dark:hover:text-white font-bold py-2 px-4 rounded mt-4"
                 >
-                  Register my article on the BlockChain
+                  BUY this article on BlockChain
                 </button>
               </div>
             ))}
