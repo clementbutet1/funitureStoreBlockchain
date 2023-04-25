@@ -30,11 +30,11 @@ contract FurnitureStore {
     event ItemSold(uint256 id, string name, uint256 price, address seller, address buyer);
     event ItemModified(uint256 id, string name, uint256 price, address seller);
 
-    // function createItem(string memory _name, uint256 _price) public {
-    //     itemCount++;
-    //     items[itemCount] = Item(itemCount, _name, _price, payable(msg.sender), payable(address(0)));
-    //     emit ItemCreated(itemCount, _name, _price, msg.sender);
-    // }
+    function createItem(string memory _name, uint256 _price) public {
+        itemCount++;
+        items[itemCount] = Item(itemCount, _name, _price, payable(msg.sender), payable(address(0)));
+        emit ItemCreated(itemCount, _name, _price, msg.sender);
+    }
 
     function getAllItems() public view returns (Item[] memory) {
         Item[] memory allItems = new Item[](itemCount);
@@ -53,6 +53,8 @@ contract FurnitureStore {
         items[_id].seller.transfer(msg.value);
 
         emit ItemSold(_id, items[_id].name, items[_id].price, items[_id].seller, msg.sender);
+
+        delete items[_id];
     }
 
     modifier onlySeller(uint256 _id) {
