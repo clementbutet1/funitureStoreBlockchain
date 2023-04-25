@@ -14,16 +14,8 @@ contract FurnitureStore {
     uint256 public itemCount;
     
     
-    constructor(uint256 _id, string memory _name, uint256 _price, address payable _seller) {
-        itemCount++;
-        items[itemCount] = Item({
-            id: _id,
-            name: _name,
-            price: _price,
-            seller: _seller,
-            buyer: payable(address(0))
-        });
-        emit ItemCreated(itemCount, _name, _price, _seller);
+    constructor() {
+        itemCount = 0;
     }
     
     event ItemCreated(uint256 id, string name, uint256 price, address seller);
