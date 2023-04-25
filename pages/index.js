@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Layout from "../src/components/Layout";
 import { useAuth } from "../src/context/AuthContext";
 import Router from "next/router";
+import Web3 from 'web3';
+
 
 const Home = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -34,6 +36,7 @@ const Home = () => {
   ];
 
   const order = () => {
+    const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
     console.log("order");
   };
 
