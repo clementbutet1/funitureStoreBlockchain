@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
 import Layout from "../src/components/Layout";
 import Router from "next/router";
-import displayToastErrorByErrorCode from "../utils/errors-management";
 import TextInput from "../src/components/TextInput";
-import Instance from "../src/Instance";
-import axios from "axios";
 import { useAuth } from "../src/context/AuthContext";
 
 const CreateCoffee = () => {
-  const { } = useAuth();
+  const {} = useAuth();
   const [title, setTitle] = useState("");
   const [errorTitle, setErrorTitle] = useState(false);
   const [price, setPrice] = useState(0);
@@ -63,7 +60,6 @@ const CreateCoffee = () => {
                   </div>
                 )}
               </div>
-          
             </div>
           </div>
           <div className="mb-5">
@@ -77,11 +73,13 @@ const CreateCoffee = () => {
               onChange={(e) => setPrice(e.target.value)}
               className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
             />
-                {errorPrice && (
-                  <div className="flex item-start pl-5 text-red-600">
-                    <p className="text-red pt-1 text-center">The price must be more than 0</p>
-                  </div>
-                )}
+            {errorPrice && (
+              <div className="flex item-start pl-5 text-red-600">
+                <p className="text-red pt-1 text-center">
+                  The price must be more than 0
+                </p>
+              </div>
+            )}
           </div>
           <div className="bg-red-600 flex justify-center align-center">
             <button
@@ -97,4 +95,4 @@ const CreateCoffee = () => {
   );
 };
 
-export default (CreateCoffee);
+export default CreateCoffee;

@@ -33,15 +33,8 @@ const Home = () => {
     },
   ];
 
-  const CommandCoffee = (title) => {
-    if (isAuthenticated)
-      Router.push({
-        pathname: "/create-coffee",
-        query: { titlecoffee: title },
-      });
-    else {
-      Router.push("/login");
-    }
+  const order = () => {
+    console.log("order");
   };
 
   return (
@@ -65,7 +58,7 @@ const Home = () => {
                   {order.description}
                 </p>
                 <button
-                  onClick={() => CommandCoffee(order.name)}
+                  onClick={() => order()}
                   className="hover:text-black hover:bg-white bg-[#00561B] dark:bg-white text-white dark:text-black dark:hover:bg-[#00561B] dark:hover:text-white font-bold py-2 px-4 rounded mt-4"
                 >
                   BUY this article on BlockChain
