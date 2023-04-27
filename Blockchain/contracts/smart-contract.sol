@@ -8,6 +8,7 @@ contract FurnitureStore {
         uint256 price;
         address payable seller;
         address payable buyer;
+        bool exists;
     }
 
     mapping(uint256 => Item) public items;
@@ -24,50 +25,51 @@ contract FurnitureStore {
 
     function createItem(string memory _name, uint256 _price) public {
         itemCount++;
-        items[itemCount] = Item(itemCount, _name, _price, payable(msg.sender), payable(address(0)));
+        items[itemCount] = Item(itemCount, _name, _price, payable(msg.sender), payable(address(0)), true);
         emit ItemCreated(itemCount, _name, _price, msg.sender);
     }
 
     function getAllItems() public view returns (Item[] memory) {
         Item[] memory allItems = new Item[](itemCount);
+        uint256 validItemCount = 0;
         for (uint256 i = 1; i <= itemCount; i++) {
-            allItems[i-1] = items[i];
+            if (items[i].exists) {
+                allItems[validItemCount] = items[i];
+                validItemCount++;
+            }
+        }
+        assembly {
+            mstore(allItems, validItemCount)
         }
         return allItems;
     }
 
     function buyItem(uint256 _id) public payable {
-        Item storage item = items[_id];
+        require(items[_id].id != 0, "Item does not exist");
+        require(items[_id].buyer == address(0), "Item has already been sold");
+        require(msg.sender.balance >= items[_id].price, "Insufficient balance");
 
-        require(item.id != 0, "Item does not exist");
-        require(item.buyer == address(0), "Item already sold");
-        require(msg.value >= item.price, "Insufficient funds");
+        items[_id].buyer = payable(msg.sender);
+        items[_id].seller.transfer(items[_id].price);
 
-        // Transfer the price of the item from the buyer to the seller
-        item.seller.transfer(item.price);
+        emit ItemSold(_id, items[_id].name, items[_id].price, items[_id].seller, msg.sender);
 
-        // Transfer any excess funds back to the buyer
-        if (msg.value > item.price) {
-            payable(msg.sender).transfer(msg.value - item.price);
-        }
-
-        // Update the item with the buyer's address
-        item.buyer = payable(msg.sender);
-
-        // Emit an event to notify the parties of the transaction
-        emit ItemSold(_id, item.name, item.price, item.seller, msg.sender);
+        delete items[_id];
     }
 
 
     modifier onlySeller(uint256 _id) {
-        require(items[_id].seller == msg.sender, "Only the seller can modify this item");
+        Item storage item = items[_id];
+        require(item.exists, "Item does not exist");
+        require(item.seller == msg.sender, "Only the seller can modify this item");
         _;
     }
 
-    function modifyItem(uint256 _id, uint256 price) public onlySeller(_id) {
-        require(items[_id].id != 0, "Item does not exist");        
-        items[_id].price = price;
+    function modifyItem(uint256 _id, uint256 _price) public onlySeller(_id) {
+        Item storage item = items[_id];
+        require(item.exists, "Item does not exist");        
+        item.price = _price;
 
-        emit ItemModified(_id, items[_id].name, price, items[_id].seller);
+        emit ItemModified(_id, item.name, _price, item.seller);
     }
 }

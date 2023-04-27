@@ -4,14 +4,16 @@ import { useAuth } from "../src/context/AuthContext";
 import Router from "next/router";
 
 const Home = () => {
-  const { getAllItem } = useAuth();
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { getAllItem, buyItem, data, loading, setLoading } = useAuth();
 
   const getAllItemOnBlockchain = async () => {
     let res = await getAllItem();
-    setData(res);
-    setLoading(false);
+  };
+
+  const BuyItemFunct = async (id) => {
+    let res = await buyItem(id + 1);
+    setLoading(true);
+    getAllItemOnBlockchain();
   };
 
   useEffect(() => {
@@ -54,7 +56,7 @@ const Home = () => {
                       Modify
                     </button>
                     <button
-                      onClick={() => orderFunct()}
+                      onClick={() => BuyItemFunct(index)}
                       className="hover:text-black hover:bg-white bg-[#00561B] dark:bg-white text-white dark:text-black dark:hover:bg-[#00561B] dark:hover:text-white font-bold py-2 px-4 rounded mt-4"
                     >
                       BUY this article on BlockChain
