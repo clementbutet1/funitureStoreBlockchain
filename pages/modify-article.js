@@ -1,26 +1,24 @@
 import { useState, useEffect } from "react";
 import Layout from "../src/components/Layout";
 import Router from "next/router";
-import TextInput from "../src/components/TextInput";
 import { useAuth } from "../src/context/AuthContext";
+import { useRouter } from "next/router";
 
-const SellArticle = () => {
-  const [title, setTitle] = useState("");
-  const [errorTitle, setErrorTitle] = useState(false);
-  const [price, setPrice] = useState(0);
+const modifyArticle = () => {
+  const router = useRouter();
+  const {
+    query: { name, originPrice, index },
+  } = router;
+  const [price, setPrice] = useState((originPrice));
   const [errorPrice, setErrorPrice] = useState(false);
-  const { createItems } = useAuth();
+  const { modifyItem } = useAuth();
 
-  const SellAnArticle = async () => {
-    if (!title) {
-      setErrorTitle(true);
-      return;
-    }
+  const ModifyAnArticle = async () => {
     if (price <= 0) {
       setErrorPrice(true);
       return;
     }
-    let res = await createItems(title, parseInt(price));
+    let res = await modifyItem(index + 1, parseInt(price));
     Router.push("/");
   };
 
@@ -46,21 +44,9 @@ const SellArticle = () => {
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
                 <label className="mb-3 block text-base font-medium text-[#07074D] dark:text-white">
-                  Name
+                  Name : 
                 </label>
-                <TextInput
-                  value={title}
-                  setValue={setTitle}
-                  setError={setErrorTitle}
-                  error={errorTitle}
-                  placeHolder={"Name"}
-                  type={"text"}
-                />
-                {errorTitle && (
-                  <div className="flex item-start pl-5 text-red-600">
-                    <p className="text-red pt-1 text-center">Field Missing</p>
-                  </div>
-                )}
+                <p className="font-bold text-xl">{name}</p>
               </div>
             </div>
           </div>
@@ -85,10 +71,10 @@ const SellArticle = () => {
           </div>
           <div className="bg-red-600 flex justify-center align-center">
             <button
-              onClick={SellAnArticle}
+              onClick={ModifyAnArticle}
               className="hover:shadow-form rounded-md w-full dark:border-white border bg-black py-3 px-8 text-center text-base font-semibold text-white outline-none"
             >
-              Sell this article
+              Modify this article price
             </button>
           </div>
         </form>
@@ -97,4 +83,4 @@ const SellArticle = () => {
   );
 };
 
-export default SellArticle;
+export default modifyArticle;

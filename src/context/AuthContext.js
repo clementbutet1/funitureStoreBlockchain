@@ -26,7 +26,7 @@ export const AuthWrapper = ({ children }) => {
     return res;
   };
 
-  const modifyItem = async (id) => {
+  const modifyItem = async (id, price) => {
     let res = await myNftContract.modifyItem(id, price);
     return res;
   };
