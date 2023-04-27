@@ -37,17 +37,27 @@ contract FurnitureStore {
     }
 
     function buyItem(uint256 _id) public payable {
-        require(items[_id].id != 0, "Item does not exist");
-        require(items[_id].buyer == address(0), "Item has already been sold");
-        require(msg.value == items[_id].price, "Incorrect price");
+        Item storage item = items[_id];
 
-        items[_id].buyer = payable(msg.sender);
-        items[_id].seller.transfer(msg.value);
+        require(item.id != 0, "Item does not exist");
+        require(item.buyer == address(0), "Item already sold");
+        require(msg.value >= item.price, "Insufficient funds");
 
-        emit ItemSold(_id, items[_id].name, items[_id].price, items[_id].seller, msg.sender);
+        // Transfer the price of the item from the buyer to the seller
+        item.seller.transfer(item.price);
 
-        delete items[_id];
+        // Transfer any excess funds back to the buyer
+        if (msg.value > item.price) {
+            payable(msg.sender).transfer(msg.value - item.price);
+        }
+
+        // Update the item with the buyer's address
+        item.buyer = payable(msg.sender);
+
+        // Emit an event to notify the parties of the transaction
+        emit ItemSold(_id, item.name, item.price, item.seller, msg.sender);
     }
+
 
     modifier onlySeller(uint256 _id) {
         require(items[_id].seller == msg.sender, "Only the seller can modify this item");
